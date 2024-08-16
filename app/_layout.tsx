@@ -5,33 +5,34 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import * as Sentry from "@sentry/react-native";
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+
+ 
+
+function RootLayout() { 
+
+  Sentry.init({
+    dsn: "https://3b3db31930c3e3473e9b6bef30fa1e7e@o4507730682707968.ingest.de.sentry.io/4507735266689104",
+    // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+    // We recommend adjusting this value in production.
+    tracesSampleRate: 1.0,
+    _experiments: {
+      // profilesSampleRate is relative to tracesSampleRate.
+      // Here, we'll capture profiles for 100% of transactions.
+      profilesSampleRate: 1.0,
+    },
   });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+  
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-    </ThemeProvider>
   );
 }
+
+export default Sentry.wrap(RootLayout);
